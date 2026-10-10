@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>2027 女生獨旅 72天環歐壯遊 App</title>
+  <style>
+    :root {
+      --primary: #1e3a8a;
+      --accent: #f97316;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --safe-bottom: env(safe-area-inset-bottom, 16px);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
+    body { background-color: var(--bg); color: var(--text); padding-bottom: calc(70px + var(--safe-bottom)); -webkit-tap-highlight-color: transparent; }
+    
+    /* Header */
+    header { background: linear-gradient(135deg, #1e3a8a, #3b82f6); color: #fff; padding: 20px 16px 14px; position: sticky; top: 0; z-index: 50; box-shadow: 0 2px 8px rgba(0,0,0,0.12); }
+    header h1 { font-size: 1.15rem; font-weight: 700; letter-spacing: 0.5px; }
+    header p { font-size: 0.75rem; opacity: 0.9; margin-top: 3px; }
+
+    /* Navigation Sections */
+    .tab-content { display: none; padding: 14px 16px; animation: fadeIn 0.2s ease; }
+    .tab-content.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Day Picker Bar */
+    .day-selector-container { margin: -14px -16px 14px; background: #fff; border-bottom: 1px solid var(--border); padding: 10px 16px; overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; }
+    .day-chip { display: inline-block; padding: 6px 14px; margin-right: 8px; border-radius: 20px; background: #f1f5f9; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); cursor: pointer; border: 1px solid transparent; }
+    .day-chip.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+    /* Timeline & Cards */
+    .card { background: var(--card-bg); border-radius: 14px; padding: 16px; margin-bottom: 14px; border: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,0.03); }
+    .card-title { font-size: 1rem; font-weight: 700; color: var(--primary); display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+    .badge { font-size: 0.7rem; padding: 2px 8px; border-radius: 12px; background: #fee2e2; color: #dc2626; font-weight: 600; }
+    .badge.green { background: #dcfce7; color: #166534; }
+    .badge.blue { background: #dbeafe; color: #1e40af; }
+
+    .timeline-item { position: relative; padding-left: 20px; margin-bottom: 14px; border-left: 2px solid #cbd5e1; }
+    .timeline-item::before { content: ""; position: absolute; left: -6px; top: 4px; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); }
+    .timeline-time { font-size: 0.75rem; font-weight: 700; color: var(--accent); }
+    .timeline-desc { font-size: 0.85rem; line-height: 1.45; margin-top: 2px; }
+
+    /* Buttons */
+    .btn-map { display: inline-flex; align-items: center; gap: 4px; padding: 5px 10px; border-radius: 6px; background: #f1f5f9; color: #0284c7; text-decoration: none; font-size: 0.75rem; font-weight: 600; margin-top: 6px; border: 1px solid #e0f2fe; }
+    .btn-map:active { background: #e0f2fe; }
+
+    /* Info Table */
+    .info-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin-top: 8px; }
+    .info-table th, .info-table td { padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--border); }
+    .info-table th { background: #f8fafc; color: var(--text-muted); font-weight: 600; }
+
+    /* Packing Checklist */
+    .checklist-item { display: flex; align-items: center; padding: 8px 0; border-bottom: 1px dashed var(--border); font-size: 0.85rem; cursor: pointer; }
+    .checklist-item input { margin-right: 10px; width: 16px; height: 16px; accent-color: var(--accent); }
+
+    /* Bottom Tab Bar */
+    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: calc(56px + var(--safe-bottom)); background: #ffffff; border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: flex-start; padding-top: 6px; z-index: 100; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); }
+    .nav-btn { background: none; border: none; display: flex; flex-direction: column; align-items: center; font-size: 0.68rem; color: var(--text-muted); cursor: pointer; width: 20%; font-weight: 600; }
+    .nav-btn.active { color: var(--accent); }
+    .nav-btn svg { width: 22px; height: 22px; margin-bottom: 2px; fill: currentColor; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>72 天女性獨旅環歐壯遊</h1>
+    <p>2027/4/20 – 6/28 ｜ 輕裝登機箱 ｜ 高CP安全路線</p>
+  </header>
+
+  <!-- TAB 1: 每日行程 -->
+  <main id="tab-itinerary" class="tab-content active">
+    <div class="day-selector-container" id="day-chips">
+      <!-- Generated by JS -->
+    </div>
+    <div id="day-details">
+      <!-- Active Day Injected Here -->
+    </div>
+  </main>
+
+  <!-- TAB 2: 交通總覽 -->
+  <section id="tab-transport" class="tab-content">
+    <div class="card">
+      <div class="card-title">長途大動線與跨國票券錦囊</div>
+      <p style="font-size:0.8rem; line-height: 1.5; color: var(--text-muted);">
+        策略：<strong>西歐至中歐陸路高鐵搶早鳥</strong>（Eurostar/ÖBB，3個月前放票）+ <strong>跨區手提行李廉航直飛</strong> + <strong>冰島放射狀專車小巴團</strong>。
+      </p>
+      <table class="info-table" style="margin-top:12px;">
+        <thead>
+          <tr>
+            <th>航段 / 路段</th>
+            <th>運具</th>
+            <th>時間與票價估計</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>阿姆斯特丹→布魯塞爾</td><td>Eurostar</td><td>約 1h 50m / 早鳥 €29</td></tr>
+          <tr><td>布魯塞爾→巴黎</td><td>Eurostar</td><td>約 1h 25m / 早鳥 €35</td></tr>
+          <tr><td>巴黎→瑞士琉森</td><td>TGV Lyria</td><td>約 4.5h / 早鳥 €49</td></tr>
+          <tr><td>瑞士境內</td><td>半價卡+SBB</td><td>120 CHF / 登山火車纜車5折</td></tr>
+          <tr><td>策馬特→威尼斯</td><td>EuroCity/義鐵</td><td>約 6h / 聯程約 €58</td></tr>
+          <tr><td>威尼斯→薩爾斯堡</td><td>ÖBB Railjet</td><td>約 5.5h / 早鳥 €44</td></tr>
+          <tr><td>薩爾斯堡↔國王湖</td><td>公車 840/841</td><td>單程約 1h / 一日券 €13</td></tr>
+          <tr><td>薩爾斯堡→維也納</td><td>ÖBB Railjet</td><td>約 2.5h / 早鳥 €19.90</td></tr>
+          <tr><td>維也納→布達佩斯</td><td>ÖBB / MÁV</td><td>約 2.5h / 早鳥 €13.90</td></tr>
+          <tr><td>布達佩斯→布拉格</td><td>RegioJet</td><td>約 6.5h / Relax商務座 €24</td></tr>
+          <tr><td>布拉格→巴塞隆納</td><td>Vueling 直飛</td><td>飛行 2.5h / 手提額度約 €65</td></tr>
+          <tr><td>巴塞隆納→里斯本</td><td>TAP 葡航直飛</td><td>飛行 2h / 手提額度約 €55</td></tr>
+          <tr><td>里斯本→波多</td><td>CP Alfa 高鐵</td><td>約 2h 50m / 早鳥 €15.50</td></tr>
+          <tr><td>波多→冰島 KEF</td><td>直飛/巴黎轉機</td><td>飛行約 4-5h / 票價約 €135</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- TAB 3: 住宿推薦 -->
+  <section id="tab-hotels" class="tab-content">
+    <div class="card">
+      <div class="card-title">獨旅高安全性推薦據點</div>
+      <p style="font-size:0.8rem; color: var(--text-muted); margin-bottom:10px;">
+        選址原則：<strong>治安優良街區、離大車站步行 5 分鐘內免拉大行李、具 24 小時前台</strong>。
+      </p>
+      <div id="hotel-list">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB 4: 行李清單 -->
+  <section id="tab-packing" class="tab-content">
+    <div class="card">
+      <div class="card-title">輕裝登機箱打包檢查清單</div>
+      <p style="font-size:0.8rem; color: var(--text-muted); margin-bottom:10px;">
+        規格：1 個 20 吋登機箱（約 8kg）+ 1 個 20L 貼身背包。點擊可標記完成狀態：
+      </p>
+      <div id="packing-checklist">
+        <!-- Checkbox items -->
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB 5: 預算分析 -->
+  <section id="tab-budget" class="tab-content">
+    <div class="card">
+      <div class="card-title">72 天總費用預估架構</div>
+      <table class="info-table">
+        <tbody>
+          <tr><th>國際長程來回機票</th><td>NT$ 38,000 ～ 42,000</td></tr>
+          <tr><th>歐陸跳點內陸機票 (4段手提)</th><td>NT$ 12,000 ～ 15,000</td></tr>
+          <tr><th>跨國高鐵與各國鐵路票券</th><td>NT$ 38,000 ～ 45,000</td></tr>
+          <tr><th>住宿費用 (70晚安全單人房)</th><td>NT$ 135,000 ～ 165,000</td></tr>
+          <tr><th>餐飲費用 (特色美食+日常輕食)</th><td>NT$ 60,000 ～ 75,000</td></tr>
+          <tr><th>門票景點與冰島 Local Tour</th><td>NT$ 35,000 ～ 42,000</td></tr>
+          <tr><th>申根醫療險、eSIM 與雜費</th><td>NT$ 12,000 ～ 15,000</td></tr>
+          <tr style="font-weight:700; color:var(--accent);"><th>總計預估 (TWD)</th><td>約 NT$ 33 萬 ～ 39 萬元</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-title">現金與信用卡配置</div>
+      <ul style="font-size:0.8rem; line-height:1.6; padding-left:18px; color:var(--text);">
+        <li><strong>刷卡為王</strong>：荷蘭、冰島、瑞士、西班牙 99% 可感應支付。準備 2 張以上海外回饋 3% 信用卡。</li>
+        <li><strong>現鈔備用</strong>：隨身準備 €150 現金即可，用於中歐小攤販或公廁投幣。</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Bottom Navigation Bar -->
+  <nav class="bottom-nav">
+    <button class="nav-btn active" onclick="switchTab('itinerary')">
+      <svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"/></svg>
+      每日行程
+    </button>
+    <button class="nav-btn" onclick="switchTab('transport')">
+      <svg viewBox="0 0 24 24"><path d="M12 2c-4 0-8 .5-8 4v9.5C4 17.43 5.57 19 7.5 19L6 20.5v.5h12v-.5L16.5 19c1.93 0 3.5-1.57 3.5-3.5V6c0-3.5-4-4-8-4zm0 2c3.5 0 6 .5 6 2H6c0-1.5 2.5-2 6-2zm-5 8c-.83 0-1.5-.67-1.5-1.5S6.17 9 7 9s1.5.67 1.5 1.5S7.83 12 7 12zm10 0c-.83 0-1.5-.67-1.5-1.5S16.17 9 17 9s1.5.67 1.5 1.5S17.83 12 17 12z"/></svg>
+      交通攻略
+    </button>
+    <button class="nav-btn" onclick="switchTab('hotels')">
+      <svg viewBox="0 0 24 24"><path d="M7 13c1.66 0 3-1.34 3-3S8.66 7 7 7s-3 1.34-3 3 1.34 3 3 3zm12-6h-8v7H3V5H1v15h2v-3h18v3h2v-9c0-2.21-1.79-4-4-4z"/></svg>
+      住宿推薦
+    </button>
+    <button class="nav-btn" onclick="switchTab('packing')">
+      <svg viewBox="0 0 24 24"><path d="M19 7h-3V6c0-1.66-1.34-3-3-3h-2c-1.66 0-3 1.34-3 3v1H5c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2zm-8-1c0-.55.45-1 1-1h2c.55 0 1 .45 1 1v1h-4V6zm8 14H5V9h14v11z"/></svg>
+      行李清單
+    </button>
+    <button class="nav-btn" onclick="switchTab('budget')">
+      <svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+      預算分析
+    </button>
+  </nav>
+
+  <script>
+    // Tab Navigation
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+      document.getElementById('tab-' + tabId).classList.add('active');
+      event.currentTarget.classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Itinerary Data
+    const daysData = [
+      {
+        day: 1, date: "4/20 (Tue)", title: "台灣桃園出發 ✈️ 阿姆斯特丹",
+        badge: "長程飛行",
+        schedule: [
+          { time: "23:45", desc: "桃園國際機場起飛，機上休息養精蓄銳。" }
+        ],
+        cost: "NT$ 0 (長程機票)", hotel: "機上"
+      },
+      {
+        day: 2, date: "4/21 (Wed)", title: "抵達阿姆斯特丹 ｜ 運河漫步與蘋果派",
+        badge: "荷蘭花季",
+        schedule: [
+          { time: "07:30", desc: "抵達史基浦機場 (AMS)，搭 NS 國鐵至中央車站 (15m, €4.90)。" },
+          { time: "11:30", desc: "午餐：The Pancake Bakery 享用荷蘭鹹甜薄餅。", map: "The Pancake Bakery Amsterdam" },
+          { time: "13:00", desc: "漫步九街與紳士運河，感受石板山牆老城風情。" },
+          { time: "15:30", desc: "下午茶：Winkel 43 溫熱厚鮮奶油蘋果派。", map: "Winkel 43 Amsterdam" },
+          { time: "17:30", desc: "搭乘 1 小時 Lovers 運河遊船 (€16)。", map: "Lovers Canal Cruises Amsterdam" }
+        ],
+        cost: "€55 (約 NT$ 1,925)", hotel: "Ibis Amsterdam Centre"
+      },
+      {
+        day: 3, date: "4/22 (Thu)", title: "庫肯霍夫花園 ｜ 鬱金香萬紫千紅大滿開",
+        badge: "花季重點",
+        schedule: [
+          { time: "08:00", desc: "入園庫肯霍夫花園 (Keukenhof)，搶晨曦無人花海。", map: "Keukenhof Lisse" },
+          { time: "13:30", desc: "租單車騎乘周邊私人花田 (3h, €11)。" },
+          { time: "18:30", desc: "晚餐：Fabel Friet 爆紅松露帕瑪森起司薯條。", map: "Fabel Friet Amsterdam" }
+        ],
+        cost: "€68 (約 NT$ 2,380)", hotel: "Ibis Amsterdam Centre"
+      },
+      {
+        day: 4, date: "4/23 (Fri)", title: "國家博物館名畫 ｜ 梵谷傳奇",
+        badge: "藝術巡禮",
+        schedule: [
+          { time: "09:00", desc: "荷蘭國家博物館欣賞林布蘭《夜巡》與維梅爾。", map: "Rijksmuseum Amsterdam" },
+          { time: "12:00", desc: "午餐：Café Loetje 荷蘭鮮嫩浸肉汁牛排。", map: "Café Loetje Johannes Vermeerstraat Amsterdam" },
+          { time: "14:00", desc: "梵谷博物館欣賞向日葵真跡。", map: "Van Gogh Museum Amsterdam" },
+          { time: "19:00", desc: "晚餐：The Seafood Bar 新鮮海鮮拼盤。", map: "The Seafood Bar Spui Amsterdam" }
+        ],
+        cost: "€115 (約 NT$ 4,025)", hotel: "Ibis Amsterdam Centre"
+      },
+      {
+        day: 5, date: "4/24 (Sat)", title: "綠色水鄉羊角村一日遊",
+        badge: "水鄉秘境",
+        schedule: [
+          { time: "07:30", desc: "搭火車轉 70 號公車前往羊角村 (來回約 €28)。" },
+          { time: "10:30", desc: "自駕平底電動木船穿梭蘆葦屋水道 (€20)。", map: "Giethoorn" },
+          { time: "12:30", desc: "午餐：Grand Café Fanfare 荷蘭肉丸與啤酒。", map: "Grand Café Fanfare Giethoorn" }
+        ],
+        cost: "€75 (約 NT$ 2,625)", hotel: "Ibis Amsterdam Centre"
+      },
+      {
+        day: 6, date: "4/25 (Sun)", title: "贊斯堡風車村與福倫丹北海漁村",
+        badge: "荷蘭傳統",
+        schedule: [
+          { time: "09:00", desc: "走訪贊斯堡風車村木鞋與起司工坊。", map: "Zaanse Schans" },
+          { time: "12:30", desc: "福倫丹漁港 De Lunch 炸魚排配醃鯡魚。", map: "De Lunch Volendam" }
+        ],
+        cost: "€52 (約 NT$ 1,820)", hotel: "Ibis Amsterdam Centre"
+      },
+      {
+        day: 7, date: "4/26 (Mon)", title: "安妮之家與國王之夜前奏曲",
+        badge: "狂歡前夜",
+        schedule: [
+          { time: "09:30", desc: "安妮之家探訪歷史記憶 (官網提前預約)。", map: "Anne Frank House Amsterdam" },
+          { time: "16:00", desc: "運河沿岸採買國王節橘色配件，感受前夜狂歡氣氛。" }
+        ],
+        cost: "€55 (約 NT$ 1,925)", hotel: "Ibis Amsterdam Centre"
+      },
+      {
+        day: 8, date: "4/27 (Tue)", title: "荷蘭國王節（Koningsdag）全城橘色派對",
+        badge: "年度盛典",
+        schedule: [
+          { time: "08:30", desc: "身穿亮橘裝漫步跳蚤自由市場 (Vrijmarkt)。" },
+          { time: "11:00", desc: "國王運河邊觀賞橘色巡遊船隻狂歡派對。" },
+          { time: "12:30", desc: "品嚐國王節限定橘色糖霜 Tompouce 千層派。" }
+        ],
+        cost: "€42 (約 NT$ 1,470)", hotel: "Ibis Amsterdam Centre"
+      },
+      {
+        day: 9, date: "4/28 (Wed)", title: "鹿特丹建築巡禮 🚄 前進比利時布魯塞爾",
+        badge: "跨國移動",
+        schedule: [
+          { time: "09:30", desc: "參觀方塊屋與 Markthal 彩繪市場午餐。", map: "Markthal Rotterdam" },
+          { time: "13:15", desc: "搭 Eurostar 直達布魯塞爾南站 (1h 10m, €29)。" },
+          { time: "16:00", desc: "走訪布魯塞爾大廣場與尿尿小童。", map: "Grand Place Brussels" },
+          { time: "18:30", desc: "晚餐：Chez Léon 百年白酒淡菜鍋佐生啤。", map: "Chez Léon Brussels" }
+        ],
+        cost: "€80 (約 NT$ 2,800)", hotel: "Motel One Brussels"
+      },
+      {
+        day: 10, date: "4/29 (Thu)", title: "中世紀童話水鄉布魯日（Bruges）",
+        badge: "比利時水都",
+        schedule: [
+          { time: "09:45", desc: "漫步布魯日愛之湖與市集廣場鐘樓。", map: "Minnewater Park Bruges" },
+          { time: "12:30", desc: "Bistrot Ludo 享用佛拉芒燉牛肉佐脆薯。", map: "Bistrot Ludo Bruges" },
+          { time: "16:00", desc: "The Chocolate Line 品嚐名廚松露巧克力。", map: "The Chocolate Line Bruges" }
+        ],
+        cost: "€65 (約 NT$ 2,275)", hotel: "Motel One Brussels"
+      },
+      {
+        day: 11, date: "4/30 (Fri)", title: "根特香草河岸 ＆ 焦糖珍珠糖鬆餅",
+        badge: "老城悠活",
+        schedule: [
+          { time: "10:00", desc: "漫步根特香草河岸與聖巴夫大教堂祭壇畫。", map: "Graslei Ghent" },
+          { time: "15:30", desc: "Maison Dandoy 熱騰騰焦糖珍珠糖烈日鬆餅。", map: "Maison Dandoy Brussels" }
+        ],
+        cost: "€52 (約 NT$ 1,820)", hotel: "Motel One Brussels"
+      },
+      {
+        day: 12, date: "5/01 (Sat)", title: "原子球塔與布魯塞爾老城俯瞰",
+        badge: "藝文時光",
+        schedule: [
+          { time: "10:00", desc: "原子球塔巡禮；司法宮觀景台看市景。", map: "Atomium Brussels" },
+          { time: "12:00", desc: "Fritland 享用排隊安達盧西亞醬脆薯。", map: "Fritland Brussels" }
+        ],
+        cost: "€40 (約 NT$ 1,400)", hotel: "Motel One Brussels"
+      },
+      {
+        day: 13, date: "5/02 (Sun)", title: "高鐵抵達巴黎 🚄 巴黎歌劇院的璀璨之夜",
+        badge: "花都啟程",
+        schedule: [
+          { time: "08:30", desc: "搭 Eurostar 高鐵直達巴黎北站 (1h 22m, €35)。" },
+          { time: "12:00", desc: "午餐：Bouillon Chartier 百年食堂油封鴨田螺。", map: "Bouillon Chartier Grands Boulevards Paris" },
+          { time: "14:00", desc: "參觀巴黎歌劇院大理石階梯與夏卡爾穹頂。", map: "Palais Garnier Paris" },
+          { time: "18:30", desc: "Cédric Grolet Opéra 領取預約擬真水果甜點。", map: "Cédric Grolet Opéra Paris" }
+        ],
+        cost: "€95 (約 NT$ 3,325)", hotel: "Hotel 34B - Astotel"
+      },
+      {
+        day: 14, date: "5/03 (Mon)", title: "羅浮宮三寶 ＆ 杜樂麗莫內睡蓮",
+        badge: "古典藝術",
+        schedule: [
+          { time: "09:00", desc: "羅浮宮欣賞蒙娜麗莎與勝利女神。", map: "Louvre Museum Paris" },
+          { time: "13:00", desc: "Angelina Paris 濃郁熱可可與栗子蒙布朗。", map: "Angelina Paris Rue de Rivoli" },
+          { time: "15:00", desc: "橘園美術館沉浸莫內橢圓《睡蓮》廳。", map: "Musée de l'Orangerie Paris" },
+          { time: "19:30", desc: "Le Relais de l'Entrecôte 綠醬牛排配薯條。", map: "Le Relais de l'Entrecôte Paris" }
+        ],
+        cost: "€92 (約 NT$ 3,220)", hotel: "Hotel 34B - Astotel"
+      },
+      {
+        day: 15, date: "5/04 (Tue)", title: "奧賽印象派畫作 ＆ 塞納河左岸花神",
+        badge: "塞納左岸",
+        schedule: [
+          { time: "09:00", desc: "奧賽美術館欣賞梵谷、雷諾瓦真跡。", map: "Musée d'Orsay Paris" },
+          { time: "12:30", desc: "花神咖啡館 Café de Flore 享用法式庫克太太。", map: "Café de Flore Paris" },
+          { time: "14:30", desc: "走訪莎士比亞書店與眺望巴黎聖母院。", map: "Shakespeare and Company Paris" }
+        ],
+        cost: "€68 (約 NT$ 2,380)", hotel: "Hotel 34B - Astotel"
+      },
+      {
+        day: 16, date: "5/05 (Wed)", title: "夏樂宮鐵塔美景 ＆ 塞納河黃昏遊船",
+        badge: "浪漫巴黎",
+        schedule: [
+          { time: "09:00", desc: "夏樂宮平台拍攝艾菲爾鐵塔全景。", map: "Trocadéro Square Paris" },
+          { time: "15:00", desc: "凱旋門登頂俯瞰 12 道放射狀大道大道。", map: "Arc de Triomphe Paris" },
+          { time: "18:00", desc: "搭 Vedettes de Paris 塞納河金色黃昏遊船。", map: "Vedettes de Paris" }
+        ],
+        cost: "€78 (約 NT$ 2,730)", hotel: "Hotel 34B - Astotel"
+      },
+      {
+        day: 17, date: "5/06 (Thu)", title: "蒙馬特藝術高地 ＆ 愛牆漫遊",
+        badge: "波希米亞",
+        schedule: [
+          { time: "09:30", desc: "走訪蒙馬特愛牆與聖心堂俯瞰巴黎全景。", map: "Sacré-Cœur Paris" },
+          { time: "12:00", desc: "粉紅小屋旁享用法餐；下午逛瑪黑區選品店。", map: "La Maison Rose Paris" },
+          { time: "18:30", desc: "L'As du Fallafel 享用超人氣中東口袋餅。", map: "L'As du Fallafel Paris" }
+        ],
+        cost: "€42 (約 NT$ 1,470)", hotel: "Hotel 34B - Astotel"
+      },
+      {
+        day: 18, date: "5/07 (Fri)", title: "凡爾賽宮金碧輝煌鏡廳一日遊",
+        badge: "王宮漫步",
+        schedule: [
+          { time: "09:00", desc: "凡爾賽宮參觀鏡廳與國王大套房。", map: "Palace of Versailles" },
+          { time: "16:00", desc: "返回巴黎市區，Citypharma 採買法系藥妝。" }
+        ],
+        cost: "€70 (約 NT$ 2,450)", hotel: "Hotel 34B - Astotel"
+      },
+      {
+        day: 19, date: "5/08 (Sat)", title: "TGV 高鐵穿越邊境 🚄 瑞士琉森湖畔木橋",
+        badge: "阿爾卑斯",
+        schedule: [
+          { time: "07:30", desc: "搭 TGV Lyria 抵達瑞士琉森 (4.5h, €49)。" },
+          { time: "12:15", desc: "火車站啟用「瑞士半價卡」(120 CHF)。" },
+          { time: "14:30", desc: "漫步卡貝爾木橋與琉森湖景觀遊船。", map: "Kapellbrücke Lucerne" }
+        ],
+        cost: "165 CHF + €49 (約 NT$ 7,500)", hotel: "Hotel Monopol Luzern"
+      },
+      {
+        day: 20, date: "5/09 (Sun)", title: "登頂少女峰 🏔️ 格林德瓦夢幻山坡",
+        badge: "雪山巔峰",
+        schedule: [
+          { time: "07:30", desc: "金色山口列車經因特拉肯抵達格林德瓦。", map: "Grindelwald" },
+          { time: "10:15", desc: "搭艾格快線+齒軌火車登頂少女峰鞍部。", map: "Jungfraujoch" },
+          { time: "18:30", desc: "晚餐：Restaurant Laterne 濃醇起司火鍋。", map: "Restaurant Laterne Interlaken" }
+        ],
+        cost: "175 CHF (約 NT$ 6,300)", hotel: "Derby Hotel Grindelwald"
+      },
+      {
+        day: 21, date: "5/10 (Mon)", title: "菲斯特懸崖步道 ＆ 巴克普湖倒影",
+        badge: "高空健行",
+        schedule: [
+          { time: "09:30", desc: "體驗 First Cliff Walk 懸崖天空步道。", map: "Grindelwald First" },
+          { time: "11:00", desc: "健行至巴克普湖欣賞雪山湖泊絕景。" }
+        ],
+        cost: "95 CHF (約 NT$ 3,420)", hotel: "Derby Hotel Grindelwald"
+      },
+      {
+        day: 22, date: "5/11 (Tue)", title: "前進無車山城策馬特 🏔️ 馬特洪峰初見",
+        badge: "黃金神峰",
+        schedule: [
+          { time: "08:00", desc: "搭景觀火車穿越山谷前往策馬特 (3h)。", map: "Zermatt" },
+          { time: "16:30", desc: "教堂橋前捕捉落日金色馬特洪峰。" },
+          { time: "18:30", desc: "晚餐：Walliserkanne 瑞士烤起司 Raclette。", map: "Walliserkanne Zermatt" }
+        ],
+        cost: "72 CHF (約 NT$ 2,592)", hotel: "Hotel Butterfly Zermatt"
+      },
+      {
+        day: 23, date: "5/12 (Wed)", title: "高納葛拉特登山鐵道 ＆ 利菲爾湖倒影",
+        badge: "經典明信片",
+        schedule: [
+          { time: "07:30", desc: "搭 Gornergrat 齒軌火車登 3089m 觀景台。", map: "Gornergrat Zermatt" },
+          { time: "10:00", desc: "健行利菲爾湖拍攝名信片馬特洪峰倒影。", map: "Riffelsee Zermatt" },
+          { time: "12:30", desc: "傳奇景觀餐廳 Chez Vrony 享用風乾肉漢堡。", map: "Chez Vrony Zermatt" }
+        ],
+        cost: "98 CHF (約 NT$ 3,528)", hotel: "Hotel Butterfly Zermatt"
+      },
+      {
+        day: 24, date: "5/13 (Thu)", title: "冰川天堂探索 ＆ 小鎮桑拿放鬆",
+        badge: "高空冰宮",
+        schedule: [
+          { time: "09:00", desc: "搭 3S 纜車登全歐最高冰川天堂站與冰宮。", map: "Matterhorn Glacier Paradise" },
+          { time: "15:00", desc: "返回小鎮享受桑拿放鬆，整理行囊。" }
+        ],
+        cost: "78 CHF (約 NT$ 2,808)", hotel: "Hotel Butterfly Zermatt"
+      },
+      {
+        day: 25, date: "5/14 (Fri)", title: "穿越阿爾卑斯 🚄 抵達威尼斯水都",
+        badge: "浪漫水都",
+        schedule: [
+          { time: "07:30", desc: "搭火車跨國直達威尼斯聖露西亞車站 (6h, €58)。" },
+          { time: "16:30", desc: "1號水上巴士沿大運河巡航，看里阿爾托橋。" },
+          { time: "18:30", desc: "Cantina Do Mori 站著喝 Spritz 配小食 Cicchetti。", map: "Cantina Do Mori Venice" },
+          { time: "20:00", desc: "Gelatoteca Suso 排隊開心果手工冰淇淋。", map: "Gelatoteca Suso Venice" }
+        ],
+        cost: "€119 (約 NT$ 4,165)", hotel: "Hotel Olimpia Venice"
+      },
+      {
+        day: 26, date: "5/15 (Sat)", title: "聖馬可晨曦 ＆ 馬卡龍彩色島 Burano",
+        badge: "繽紛海島",
+        schedule: [
+          { time: "07:30", desc: "清晨無人聖馬可廣場與嘆息橋漫步。", map: "Piazza San Marco Venice" },
+          { time: "09:00", desc: "搭12號船至彩色島漫步拍攝馬卡龍水巷。", map: "Burano Venice" },
+          { time: "12:30", desc: "Trattoria da Romano 招牌墨魚麵與海鮮燉飯。", map: "Trattoria da Romano Burano" }
+        ],
+        cost: "€48 (約 NT$ 1,680)", hotel: "Hotel Olimpia Venice"
+      },
+      {
+        day: 27, date: "5/16 (Sun)", title: "貢多拉水巷穿梭 ＆ 沈船書店探奇",
+        badge: "水都風情",
+        schedule: [
+          { time: "09:00", desc: "參觀總督宮內部與嘆息橋內部囚道。", map: "Doge's Palace Venice" },
+          { time: "14:00", desc: "體驗貢多拉水巷漫遊 30 分鐘。" },
+          { time: "16:30", desc: "走訪世界最美之一的沈船書店拍照。", map: "Libreria Acqua Alta Venice" }
+        ],
+        cost: "€105 (約 NT$ 3,675)", hotel: "Hotel Olimpia Venice"
+      },
+      {
+        day: 28, date: "5/17 (Mon)", title: "義鐵轉 ÖBB 🚄 奧地利薩爾斯堡莫札特故鄉",
+        badge: "音樂之城",
+        schedule: [
+          { time: "08:30", desc: "搭高鐵穿越阿爾卑斯至薩爾斯堡 (5.5h, €44)。" },
+          { time: "15:30", desc: "米拉貝爾花園漫步、拍攝莫札特出生地。", map: "Mozart's Birthplace Salzburg" },
+          { time: "18:30", desc: "Augustiner 啤酒館洗陶杯現裝生啤佐烤豬腳。", map: "Augustiner Bräustübl Salzburg" }
+        ],
+        cost: "€72 (約 NT$ 2,520)", hotel: "H+ Hotel Salzburg"
+      },
+      {
+        day: 29, date: "5/18 (Tue)", title: "德國國王湖（Königssee）人間仙境一日遊",
+        badge: "翠綠上湖",
+        schedule: [
+          { time: "08:15", desc: "站前搭 840 公車轉 841 直達國王湖 (1h, €13)。" },
+          { time: "10:30", desc: "搭電動船至 Salet，健行 Obersee 上湖牛奶屋。", map: "Obersee Berchtesgaden" },
+          { time: "13:30", desc: "紅蔥頭教堂旁 Fischer 享用現烤煙燻鮭魚。", map: "Fischer vom Königssee Berchtesgaden" }
+        ],
+        cost: "€75 (約 NT$ 2,625)", hotel: "H+ Hotel Salzburg"
+      },
+      {
+        day: 30, date: "5/19 (Wed)", title: "高堡俯瞰 🚄 ÖBB 前進音樂之都維也納",
+        badge: "帝國首都",
+        schedule: [
+          { time: "09:00", desc: "登頂薩爾斯堡要塞俯瞰阿爾卑斯全景。", map: "Festung Hohensalzburg" },
+          { time: "13:30", desc: "搭 ÖBB Railjet 直達維也納 (2h 22m, €19.90)。" },
+          { time: "19:30", desc: "Figlmüller 享用名聞遐邇比臉大炸肉排。", map: "Figlmüller Wollzeile Vienna" }
+        ],
+        cost: "€72 (約 NT$ 2,520)", hotel: "Motel One Wien-Hauptbahnhof"
+      },
+      {
+        day: 31, date: "5/20 (Thu)", title: "美泉宮輝煌 ＆ 中央咖啡館薩赫蛋糕",
+        badge: "哈布斯堡",
+        schedule: [
+          { time: "08:30", desc: "美泉宮參觀西西公主宮室與凱旋門後山。", map: "Schönbrunn Palace Vienna" },
+          { time: "14:30", desc: "藝術史博物館欣賞巴洛克圓頂與大師畫作。", map: "Kunsthistorisches Museum Vienna" },
+          { time: "17:30", desc: "中央咖啡館品嚐米朗琪咖啡與薩赫蛋糕。", map: "Café Central Vienna" }
+        ],
+        cost: "€88 (約 NT$ 3,080)", hotel: "Motel One Wien-Hauptbahnhof"
+      },
+      {
+        day: 32, date: "5/21 (Fri)", title: "美景宮克林姆之吻 ＆ 百水奇幻建築",
+        badge: "黃金名畫",
+        schedule: [
+          { time: "09:30", desc: "上美景宮近距離欣賞克林姆黃金巨作《吻》。", map: "Upper Belvedere Vienna" },
+          { time: "14:00", desc: "參觀百水公寓童話曲面色彩建築與中央市場。" }
+        ],
+        cost: "€58 (約 NT$ 2,030)", hotel: "Motel One Wien-Hauptbahnhof"
+      },
+      {
+        day: 33, date: "5/22 (Sat)", title: "瓦豪河谷葡萄園古堡與多瑙河巡航",
+        badge: "河谷古堡",
+        schedule: [
+          { time: "10:00", desc: "梅爾克修道院金碧輝煌參觀 (套票 €45)。", map: "Melk Abbey" },
+          { time: "13:45", desc: "搭遊船巡航瓦豪河谷葡萄園古堡至杜倫施坦。" }
+        ],
+        cost: "€75 (約 NT$ 2,625)", hotel: "Motel One Wien-Hauptbahnhof"
+      },
+      {
+        day: 34, date: "5/23 (Sun)", title: "火車前進匈牙利布達佩斯 🚄 多瑙河黃昏夜航",
+        badge: "多瑙明珠",
+        schedule: [
+          { time: "08:40", desc: "搭跨國火車抵布達佩斯東站 (2.5h, €13.90)。" },
+          { time: "12:30", desc: "Menza Étterem 享用道地牛肉湯與香煎鴨肝飯。", map: "Menza Étterem Budapest" },
+          { time: "19:30", desc: "多瑙河夜間遊船看金色國會大廈倒影。", map: "Legenda City Cruises Budapest" }
+        ],
+        cost: "€69 (約 NT$ 2,415)", hotel: "Ibis Styles Budapest Center"
+      },
+      {
+        day: 35, date: "5/24 (Mon)", title: "漁夫堡晨曦 ＆ 塞切尼黃色宮殿溫泉",
+        badge: "宮殿溫泉",
+        schedule: [
+          { time: "06:45", desc: "晨起登上漁夫堡看粉嫩日出晨曦免門票。", map: "Fisherman's Bastion Budapest" },
+          { time: "10:30", desc: "塞切尼露天新巴洛克熱泉池放鬆舒壓。", map: "Széchenyi Thermal Bath Budapest" },
+          { time: "16:00", desc: "紐約咖啡館預約世界最美下午茶。", map: "New York Café Budapest" }
+        ],
+        cost: "€65 (約 NT$ 2,275)", hotel: "Ibis Styles Budapest Center"
+      },
+      {
+        day: 36, date: "5/25 (Tue)", title: "中央市場伴手禮 ＆ 廢墟酒吧探索",
+        badge: "特色廢墟",
+        schedule: [
+          { time: "09:00", desc: "走訪中央市場採買紅椒粉伴手禮與午餐。", map: "Great Market Hall Budapest" },
+          { time: "17:30", desc: "探索全歐最知名廢墟酒吧 Szimpla Kert。", map: "Szimpla Kert Budapest" }
+        ],
+        cost: "€55 (約 NT$ 1,925)", hotel: "Ibis Styles Budapest Center"
+      },
+      {
+        day: 37, date: "5/26 (Wed)", title: "蓋勒特山八橋連線 ＆ 瓦茨街悠活",
+        badge: "河岸登高",
+        schedule: [
+          { time: "15:30", desc: "登蓋勒特山觀景台俯瞰八座多瑙河橋樑連線。" },
+          { time: "18:30", desc: "河畔小酒館享用法式烤雞套餐。" }
+        ],
+        cost: "€35 (約 NT$ 1,225)", hotel: "Ibis Styles Budapest Center"
+      },
+      {
+        day: 38, date: "5/27 (Thu)", title: "RegioJet 黃色商務火車 🚄 捷克千塔之城布拉格",
+        badge: "波希米亞",
+        schedule: [
+          { time: "07:58", desc: "搭 RegioJet 豪華商務車廂直達布拉格 (6.5h, €24)。" },
+          { time: "17:30", desc: "老城廣場看天文鐘整點十二門徒報時。", map: "Prague Astronomical Clock" },
+          { time: "19:00", desc: "Kantýna 老肉舖秤重切烤牛排配生啤酒。", map: "Kantýna Prague" }
+        ],
+        cost: "€65 (約 NT$ 2,275)", hotel: "Motel One Prague-Florentinum"
+      },
+      {
+        day: 39, date: "5/28 (Fri)", title: "晨曦查理大橋 ＆ 布拉格城堡區聖維特",
+        badge: "晨霧拱橋",
+        schedule: [
+          { time: "06:30", desc: "清晨漫步晨霧瀰漫查理大橋避開人潮。", map: "Charles Bridge Prague" },
+          { time: "09:30", desc: "參觀布拉格城堡聖維特教堂與黃金巷。", map: "Prague Castle" },
+          { time: "12:30", desc: "Kuchyň 鐵鍋挑選傳統酸奶油燉牛肉。", map: "Kuchyň Prague" },
+          { time: "18:30", desc: "U Fleků 百年酒廠黑生啤配脆皮烤鴨。", map: "U Fleků Prague" }
+        ],
+        cost: "€65 (約 NT$ 2,275)", hotel: "Motel One Prague-Florentinum"
+      },
+      {
+        day: 40, date: "5/29 (Sat)", title: "天鵝湖畔與藍儂牆漫步",
+        badge: "文青角落",
+        schedule: [
+          { time: "09:30", desc: "查理大橋北側天鵝海灣拍照與走訪藍儂牆。", map: "Lennon Wall Prague" },
+          { time: "12:30", desc: "Café Savoy 挑高新文藝復興天頂早午餐。", map: "Café Savoy Prague" }
+        ],
+        cost: "€38 (約 NT$ 1,330)", hotel: "Motel One Prague-Florentinum"
+      },
+      {
+        day: 41, date: "5/30 (Sun)", title: "童話 CK 小鎮庫倫洛夫一日遊",
+        badge: "童話世界",
+        schedule: [
+          { time: "07:00", desc: "搭 RegioJet 巴士前往 CK 小鎮 (2h 45m, €18)。" },
+          { time: "10:00", desc: "漫步馬蹄形河灣老城與城堡彩繪塔。", map: "Český Krumlov" },
+          { time: "13:00", desc: "地窖炭烤餐廳享用木炭現烤豬肋排。", map: "Krčma v Šatlavské ulici Český Krumlov" }
+        ],
+        cost: "€45 (約 NT$ 1,575)", hotel: "Motel One Prague-Florentinum"
+      },
+      {
+        day: 42, date: "5/31 (Mon)", title: "市立圖書館無限書塔 ＆ 伏爾塔瓦河天鵝船",
+        badge: "城市漫步",
+        schedule: [
+          { time: "09:30", desc: "市立圖書館拍攝書本堆砌無限鏡面書塔。" },
+          { time: "12:30", desc: "Lokál Dlouháá 品嚐炸起司配皮爾森生啤。", map: "Lokál Dlouháá Prague" }
+        ],
+        cost: "€44 (約 NT$ 1,540)", hotel: "Motel One Prague-Florentinum"
+      },
+      {
+        day: 43, date: "6/01 (Tue)", title: "KV 溫泉小鎮試飲迴廊漫步",
+        badge: "捷克溫泉",
+        schedule: [
+          { time: "08:30", desc: "搭巴士至卡羅維瓦利買瓷杯試飲溫泉水。" },
+          { time: "13:00", desc: "河畔餐廳享用香煎鮭魚與溫泉威化餅。" }
+        ],
+        cost: "€45 (約 NT$ 1,575)", hotel: "Motel One Prague-Florentinum"
+      },
+      {
+        day: 44, date: "6/02 (Wed)", title: "帝國咖啡館 ＆ 準備飛往南歐",
+        badge: "中歐尾聲",
+        schedule: [
+          { time: "12:00", desc: "Café Imperial 百年陶瓷浮雕壁畫下享用午餐。", map: "Café Imperial Prague" },
+          { time: "15:00", desc: "整理登機行囊，核對後段航班手提行李尺寸。" }
+        ],
+        cost: "€35 (約 NT$ 1,225)", hotel: "Motel One Prague-Florentinum"
+      },
+      {
+        day: 45, date: "6/03 (Thu)", title: "直飛巴塞隆納 ✈️ 聖家堂神聖流動之光",
+        badge: "高第奇蹟",
+        schedule: [
+          { time: "09:30", desc: "直飛巴塞隆納 (2.5h, €65)；Aerobús 進市區。" },
+          { time: "13:00", desc: "Cervecería Catalana 現煎鐵板竹蟶與鵝肝小堡。", map: "Cervecería Catalana Barcelona" },
+          { time: "15:30", desc: "聖家堂參觀登頂，看下午陽光彩色玻璃光芒。", map: "Sagrada Família Barcelona" }
+        ],
+        cost: "€147 (約 NT$ 5,145)", hotel: "Room Mate Carla Hotel"
+      },
+      {
+        day: 46, date: "6/04 (Fri)", title: "巴特婁之家波浪 ＆ 奎爾公園彩色蜥蜴",
+        badge: "西班牙風",
+        schedule: [
+          { time: "09:00", desc: "巴特婁之家參觀海洋波浪天花與巨龍屋頂。", map: "Casa Batlló Barcelona" },
+          { time: "12:30", desc: "Ciutat Comtal 享用海鮮飯與炸吉拿棒沾黑巧。", map: "Ciutat Comtal Barcelona" },
+          { time: "15:00", desc: "奎爾公園彩色馬賽克蜥蜴前看地中海。", map: "Park Güell Barcelona" }
+        ],
+        cost: "€85 (約 NT$ 2,975)", hotel: "Room Mate Carla Hotel"
+      },
+      {
+        day: 47, date: "6/05 (Sat)", title: "博蓋利亞熱帶市場 ＆ 哥德區老石巷",
+        badge: "地中海市集",
+        schedule: [
+          { time: "09:30", desc: "博蓋利亞市場喝現榨果汁、穿梭哥德區主教橋。", map: "Mercat de la Boqueria Barcelona" },
+          { time: "18:30", desc: "巴塞隆納海灘吹初夏地中海微風看日落。" }
+        ],
+        cost: "€48 (約 NT$ 1,680)", hotel: "Room Mate Carla Hotel"
+      },
+      {
+        day: 48, date: "6/06 (Sun)", title: "蒙特惠奇城堡 ＆ 經典海鮮燉飯",
+        badge: "海灣登高",
+        schedule: [
+          { time: "10:00", desc: "搭纜車登蒙特惠奇城堡俯瞰巴塞港口大景。" },
+          { time: "13:00", desc: "百年名店 7 Portes 享用傳統大鍋海鮮燉飯。", map: "Restaurant 7 Portes Barcelona" }
+        ],
+        cost: "€62 (約 NT$ 2,170)", hotel: "Room Mate Carla Hotel"
+      },
+      {
+        day: 49, date: "6/07 (Mon)", title: "飛往葡萄牙里斯本 ✈️ 貝倫區百年蛋塔鼻祖",
+        badge: "大航海時代",
+        schedule: [
+          { time: "10:00", desc: "飛里斯本 (2h, €55)；搭 15E 電車至貝倫區。" },
+          { time: "13:00", desc: "Pastéis de Belém 1837年正宗酥脆熱蛋塔。", map: "Pastéis de Belém" },
+          { time: "14:30", desc: "哲羅姆派修道院曼努埃爾石雕與發現者紀念碑。", map: "Jerónimos Monastery Lisbon" },
+          { time: "19:30", desc: "Cervejaria Ramiro 大蒜油爆香虎蝦與牛排堡。", map: "Cervejaria Ramiro Lisbon" }
+        ],
+        cost: "€118 (約 NT$ 4,130)", hotel: "Hotel da Baixa"
+      },
+      {
+        day: 50, date: "6/08 (Tue)", title: "28 號復古黃電車 ＆ 聖露西亞瓷磚觀景台",
+        badge: "舊城風情",
+        schedule: [
+          { time: "08:30", desc: "搭乘 28 號黃色路面電車穿梭陡峭坡道。", map: "Tram 28 Lisbon" },
+          { time: "10:00", desc: "聖露西亞觀景台欣賞紅瓦白牆與藍瓷磚花園。", map: "Miradouro de Santa Luzia Lisbon" },
+          { time: "18:30", desc: "小酒館聽命運之歌法朵民謠佐綠葡萄酒。" }
+        ],
+        cost: "€48 (約 NT$ 1,680)", hotel: "Hotel da Baixa"
+      },
+      {
+        day: 51, date: "6/09 (Wed)", title: "辛特拉佩納宮童話 ＆ 歐陸極西羅卡角",
+        badge: "極西之地",
+        schedule: [
+          { time: "09:30", desc: "佩納宮參觀迪士尼般黃紅糖果城堡。", map: "Pena Palace Sintra" },
+          { time: "14:00", desc: "雷加萊拉莊園走入神秘天井地宮。", map: "Quinta da Regaleira Sintra" },
+          { time: "16:30", desc: "羅卡角：陸止於此，海始於斯。", map: "Cabo da Roca" }
+        ],
+        cost: "€75 (約 NT$ 2,625)", hotel: "Hotel da Baixa"
+      },
+      {
+        day: 52, date: "6/10 (Thu)", title: "國鐵前往波多 🚄 最美藍瓷車站與濕答答三明治",
+        badge: "酒都波多",
+        schedule: [
+          { time: "09:30", desc: "搭 CP 高鐵直達波多 (2h 50m, €15.50)。" },
+          { time: "12:45", desc: "聖本篤車站欣賞 2 萬片藍白磁磚壁畫。", map: "São Bento Railway Station Porto" },
+          { time: "13:30", desc: "Brasão Aliados 享用濕答答三明治佐啤酒起司醬。", map: "Brasão Aliados Porto" },
+          { time: "15:30", desc: "萊羅書店朝聖世界最美紅色雙向旋轉樓梯。", map: "Livraria Lello Porto" }
+        ],
+        cost: "€55 (約 NT$ 1,925)", hotel: "PortoBay Teatro"
+      },
+      {
+        day: 53, date: "6/11 (Fri)", title: "路易一世雙層大橋 ＆ 莫羅花園杜羅河夕陽",
+        badge: "絕美日落",
+        schedule: [
+          { time: "09:30", desc: "漫步路易一世鋼鐵大橋上層俯瞰河道。", map: "Dom Luís I Bridge Porto" },
+          { time: "11:00", desc: "Graham's 酒窖導覽品嚐 3 款香醇波特酒。", map: "Graham's Port Lodge Porto" },
+          { time: "13:30", desc: "二星平價館 Cantinho 享用低溫嫩煎章魚腳。", map: "Cantinho do Avillez Porto" },
+          { time: "19:30", desc: "莫羅花園看全歐陸最震撼杜羅河夕陽與夜景。" }
+        ],
+        cost: "€75 (約 NT$ 2,625)", hotel: "PortoBay Teatro"
+      },
+      {
+        day: 54, date: "6/12 (Sat)", title: "杜羅河谷葡萄梯田世界遺產一日遊",
+        badge: "酒莊梯田",
+        schedule: [
+          { time: "08:30", desc: "聖本篤站搭景觀火車沿河至 Pinhão (2h, €22)。" },
+          { time: "14:30", desc: "體驗平底木船巡航河谷梯田酒莊 (€12)。" }
+        ],
+        cost: "€70 (約 NT$ 2,450)", hotel: "PortoBay Teatro"
+      },
+      {
+        day: 55, date: "6/13 (Sun)", title: "波多濱海燈塔漫步 ＆ 整理禦寒衣物",
+        badge: "南歐告別",
+        schedule: [
+          { time: "10:00", desc: "搭1號路面電車直達 Foz 濱海步道看大西洋浪花。" },
+          { time: "15:00", desc: "整理所有禦寒衣物，準備迎接北歐低溫。" }
+        ],
+        cost: "€35 (約 NT$ 1,225)", hotel: "PortoBay Teatro"
+      },
+      {
+        day: 56, date: "6/14 (Mon)", title: "飛抵冰島 ✈️ 藍湖奶藍地熱溫泉",
+        badge: "極致白晝",
+        schedule: [
+          { time: "06:00", desc: "波多飛冰島 KEF 機場 (€135)。" },
+          { time: "15:00", desc: "藍湖溫泉敷白矽泥面膜、喝迎賓飲品 (€95)。", map: "Blue Lagoon Iceland" },
+          { time: "20:00", desc: "晚餐：雷克雅維克 Bæjarins 羊肉熱狗攤。", map: "Bæjarins Beztu Pylsur Reykjavik" }
+        ],
+        cost: "€245 (約 NT$ 8,575)", hotel: "Center Hotels Plaza"
+      },
+      {
+        day: 57, date: "6/15 (Tue)", title: "冰島黃金圈經典一日小巴專車團",
+        badge: "地熱奇觀",
+        schedule: [
+          { time: "08:30", desc: "參加精緻小巴團：辛格維利爾歐亞板塊大裂縫。", map: "Thingvellir National Park Iceland" },
+          { time: "12:00", desc: "間歇泉 Geysir 噴發高達 20 米沸水柱。", map: "Geysir Iceland" },
+          { time: "14:30", desc: "黃金瀑布 Gullfoss 感受奔騰水霧氣勢。", map: "Gullfoss Falls Iceland" },
+          { time: "19:30", desc: "晚餐：Messinn 熱鐵鍋煎北極紅點鮭魚佐馬鈴薯。", map: "Messinn Reykjavik" }
+        ],
+        cost: "€125 (約 NT$ 4,375)", hotel: "Center Hotels Plaza"
+      },
+      {
+        day: 58, date: "6/16 (Wed)", title: "南岸二日團 D1 ｜ 雙瀑布與維克黑沙灘",
+        badge: "南岸精華",
+        schedule: [
+          { time: "08:00", desc: "參加南岸冰河湖二日小巴團 (€360含住宿交通)。" },
+          { time: "10:00", desc: "塞里雅蘭瀑布穿防水衣走入水簾洞。", map: "Seljalandsfoss Iceland" },
+          { time: "12:30", desc: "斯科加爾 60 米壯觀彩虹瀑布。", map: "Skógafoss Iceland" },
+          { time: "15:30", desc: "維克黑沙灘欣賞玄武岩石柱奇觀。", map: "Reynisfjara Black Sand Beach Iceland" }
+        ],
+        cost: "包含在二日團中", hotel: "南岸鄉村景觀飯店"
+      },
+      {
+        day: 59, date: "6/17 (Thu)", title: "南岸二日團 D2 ｜ 傑古沙龍冰河湖與鑽石黑沙灘",
+        badge: "千年冰河",
+        schedule: [
+          { time: "08:30", desc: "傑古沙龍搭兩棲船穿梭藍色巨型浮冰。", map: "Jökulsárlón Iceland" },
+          { time: "11:30", desc: "鑽石沙灘觸摸被海浪沖上岸的晶瑩黑沙冰塊。", map: "Diamond Beach Iceland" },
+          { time: "14:00", desc: "瓦特納冰原初級藍冰健行體驗。" }
+        ],
+        cost: "二日團總計 €380 (約 NT$ 13,300)", hotel: "Center Hotels Plaza"
+      },
+      {
+        day: 60, date: "6/18 (Fri)", title: "哈爾格林姆大教堂列高屋 ＆ 托寧湖漫步",
+        badge: "首都漫遊",
+        schedule: [
+          { time: "09:30", desc: "登哈爾格林姆大教堂俯瞰全城彩色列高小屋。", map: "Hallgrímskirkja Reykjavik" },
+          { time: "13:00", desc: "Brauð & Co. 品嚐熱騰騰香脆肉桂捲。", map: "Brauð & Co. Reykjavik" }
+        ],
+        cost: "€42 (約 NT$ 1,470)", hotel: "Center Hotels Plaza"
+      },
+      {
+        day: 61, date: "6/19 (Sat)", title: "斯奈山半島冰島縮影 ｜ 教堂山草帽山",
+        badge: "冰島縮影",
+        schedule: [
+          { time: "08:00", desc: "參加斯奈山一日小巴團 (€95)。" },
+          { time: "10:30", desc: "經典教堂山 Kirkjufell 瀑布同框拍照。", map: "Kirkjufell Iceland" },
+          { time: "15:30", desc: "海豹沙灘尋找在岩石上曬太陽野生海豹。" }
+        ],
+        cost: "€115 (約 NT$ 4,025)", hotel: "Center Hotels Plaza"
+      },
+      {
+        day: 62, date: "6/20 (Sun)", title: "夏至永晝之夜 ｜ 午夜不落的金色太陽",
+        badge: "永晝體驗",
+        schedule: [
+          { time: "10:00", desc: "太陽航海者雕塑漫步、享受地熱海水泳池。" },
+          { time: "23:30", desc: "燈塔前體驗半夜12點太陽不落下的永晝白夜奇景。" }
+        ],
+        cost: "€35 (約 NT$ 1,225)", hotel: "Center Hotels Plaza"
+      },
+      {
+        day: 63, date: "6/21 (Mon)", title: "萬年玄武岩火山熔岩地道探險",
+        badge: "火山隧道",
+        schedule: [
+          { time: "09:30", desc: "參加熔岩地道探險團，探索萬年玄武岩地道。" },
+          { time: "16:30", desc: "採買冰島純天然火山海鹽與保養品伴手禮。" }
+        ],
+        cost: "€100 (約 NT$ 3,500)", hotel: "Center Hotels Plaza"
+      },
+      {
+        day: 64, date: "6/22 (Tue)", title: "冰島國家博物館與寄出明信片",
+        badge: "人文時光",
+        schedule: [
+          { time: "10:00", desc: "參觀冰島國家博物館，了解維京人定居史。" },
+          { time: "14:30", desc: "老城郵局寄出蓋有冰島極北戳印明信片。" }
+        ],
+        cost: "€52 (約 NT$ 1,820)", hotel: "Center Hotels Plaza"
+      },
+      {
+        day: 65, date: "6/23 (Wed)", title: "Sky Lagoon 天空之湖無邊際海洋溫泉",
+        badge: "無邊溫泉",
+        schedule: [
+          { time: "11:00", desc: "Sky Lagoon 體驗七步儀式與俯瞰大西洋無邊池。", map: "Sky Lagoon Iceland" },
+          { time: "19:00", desc: "晚餐：市區享用香煎羊排與濃純熱可可。" }
+        ],
+        cost: "€125 (約 NT$ 4,375)", hotel: "Center Hotels Plaza"
+      },
+      {
+        day: 66, date: "6/24 (Thu)", title: "海灣步道清爽散步與跳蚤市場尋寶",
+        badge: "北歐悠閒",
+        schedule: [
+          { time: "10:30", desc: "海濱步道慢跑、逛逛冰島羊毛手織毛衣店。" }
+        ],
+        cost: "€35 (約 NT$ 1,225)", hotel: "Center Hotels Plaza"
+      },
+      {
+        day: 67, date: "6/25 (Fri)", title: "收拾行囊退稅 🚌 入住機場旁飯店",
+        badge: "整裝完畢",
+        schedule: [
+          { time: "14:00", desc: "搭 Flybus 直達機場旁，辦理信用卡即時退稅。" }
+        ],
+        cost: "€40 (約 NT$ 1,400)", hotel: "Aurora Hotel at KEF Airport"
+      },
+      {
+        day: 68, date: "6/26 (Sat)", title: "飛往阿姆斯特丹 ✈️ 伴手禮補齊快閃",
+        badge: "回程樞紐",
+        schedule: [
+          { time: "07:30", desc: "冰島直飛阿姆斯特丹 (3h, €90)。" },
+          { time: "14:00", desc: "搭火車進市區買齊荷蘭起司、焦糖煎餅伴手禮。" }
+        ],
+        cost: "€120 (約 NT$ 4,200)", hotel: "CitizenM Schiphol Airport"
+      },
+      {
+        day: 69, date: "6/27 (Sun)", title: "史基浦機場出境 ✈️ 踏上返台歸途",
+        badge: "長程飛行",
+        schedule: [
+          { time: "10:30", desc: "機場海關蓋章手續完畢，搭機返台。" }
+        ],
+        cost: "NT$ 0", hotel: "機上"
+      },
+      {
+        day: 70, date: "6/28 (Mon)", title: "平安抵達台灣桃園國際機場 🇹🇼",
+        badge: "圓滿完成",
+        schedule: [
+          { time: "06:30", desc: "降落桃園機場，搭機捷平安返家，圓滿完成 72 天壯遊！" }
+        ],
+        cost: "NT$ 0", hotel: "溫暖的家"
+      }
+    ];
+
+    // Hotels Data
+    const hotelsData = [
+      { city: "荷蘭阿姆斯特丹", name: "Ibis Amsterdam Centre", address: "Stationsplein 49, 1012 AB Amsterdam", note: "車站正上方，警力最密、無須拖行李進紅燈區。" },
+      { city: "比利時布魯塞爾", name: "Motel One Brussels", address: "Rue Royale 120, 1000 Bruxelles", note: "皇宮區旁治安極佳，步行至大廣場 10 分鐘。" },
+      { city: "法國巴黎", name: "Hotel 34B - Astotel", address: "34 Rue Bergère, 75009 Paris", note: "第 9 區安靜安全、附免費下午茶 Bar、近歌劇院。" },
+      { city: "瑞士琉森", name: "Hotel Monopol Luzern", address: "Pilatusstrasse 1, 6002 Luzern", note: "火車站過馬路即達，湖景遊船碼頭就在對面。" },
+      { city: "瑞士格林德瓦", name: "Derby Hotel Grindelwald", address: "Dorfstrasse 75, 3818 Grindelwald", note: "火車站月台直通，前往少女峰與菲斯特極方便。" },
+      { city: "瑞士策馬特", name: "Hotel Butterfly Zermatt", address: "Bodmenstrasse 21, 3920 Zermatt", note: "無車小鎮步行 3 分鐘，附放鬆桑拿房。" },
+      { city: "義大利威尼斯", name: "Hotel Olimpia Venice", address: "Fondamenta Tolentini 2468, 30135 Venezia", note: "羅馬廣場旁，免拖登機箱走數十座階梯拱橋！" },
+      { city: "奧地利薩爾斯堡", name: "H+ Hotel Salzburg", address: "Südtiroler Platz 13, 5020 Salzburg", note: "站前正前方，門口即是國王湖跨國公車站。" },
+      { city: "奧地利維也納", name: "Motel One Wien-Hauptbahnhof", address: "Gerhard-Bronner-Straße 11, 1100 Wien", note: "中央火車站旁步行 2 分鐘，高樓層遠眺市景。" },
+      { city: "匈牙利布達佩斯", name: "Ibis Styles Budapest Center", address: "Rákóczi út 58, 1074 Budapest", note: "地鐵站旁，現代明亮、CP值極高。" },
+      { city: "捷克布拉格", name: "Motel One Prague-Florentinum", address: "Na Florenci 21, 110 00 Praha 1", note: "鄰近地鐵與中央車站，鬧中取靜且安全。" },
+      { city: "西班牙巴塞隆納", name: "Room Mate Carla Hotel", address: "Carrer de Mallorca 288, 08037 Barcelona", note: "擴展區林蔭大道，治安遠勝蘭布拉大道周邊。" },
+      { city: "葡萄牙里斯本", name: "Hotel da Baixa", address: "Rua da Prata 135, 1100-414 Lisboa", note: "下城平坦地段，免爬恐怖斜坡碎石路。" },
+      { city: "葡萄牙波多", name: "PortoBay Teatro", address: "Rua Sá da Bandeira 84, 4000-427 Porto", note: "地標劇院改建，近聖本篤車站與萊羅書店。" },
+      { city: "冰島雷克雅維克", name: "Center Hotels Plaza", address: "Aðalstræti 4, 101 Reykjavík", note: "老城心臟，門口即為小巴 Tour 接送點。" },
+      { city: "冰島機場旁", name: "Aurora Hotel at KEF Airport", address: "Blikavellir 2, 235 Keflavík", note: "機場航廈步行 3 分鐘，清晨航班無痛出發。" },
+      { city: "阿姆斯特丹機場", name: "CitizenM Schiphol Airport", address: "Jan Piezingerweg, 1118 CP Schiphol", note: "航廈室內連通道直達，獨旅安全無懈可擊。" }
+    ];
+
+    // Packing Items
+    const packingItems = [
+      "防風防潑水 GORE-TEX 外套 1 件",
+      "輕薄可折疊羽絨外套 1 件",
+      "羊毛/排汗保暖長袖 2 件",
+      "好走彈性快乾長褲 2 件",
+      "Vibram 防水健行鞋 1 雙（穿腳上）",
+      "輕便休閒鞋 1 雙（放箱內）",
+      "防盜貼身腰包 / 手機斜背掛繩（必備）",
+      "歐規雙圓孔轉接頭 2 個 + 萬用插座",
+      "行動電源 10,000mAh (隨身攜帶)",
+      "個人常備藥（感冒、止痛、腸胃藥）",
+      "保濕乳霜、防曬乳 (100ml以內分裝)",
+      "摺疊矽膠水壺 / 晴雨兩用摺疊傘",
+      "行李密碼鋼絲鎖（火車置物架防盜）"
+    ];
+
+    // Initialize UI
+    function init() {
+      // 1. Render Day Chips
+      const chipContainer = document.getElementById('day-chips');
+      daysData.forEach((d, idx) => {
+        const chip = document.createElement('div');
+        chip.className = `day-chip ${idx === 0 ? 'active' : ''}`;
+        chip.innerText = `D${d.day} ${d.date.split(' ')[0]}`;
+        chip.onclick = () => renderDay(idx);
+        chipContainer.appendChild(chip);
+      });
+
+      // 2. Render Day Details
+      renderDay(0);
+
+      // 3. Render Hotels
+      const hotelList = document.getElementById('hotel-list');
+      hotelsData.forEach(h => {
+        const item = document.createElement('div');
+        item.style.marginBottom = '12px';
+        item.style.paddingBottom = '10px';
+        item.style.borderBottom = '1px dashed var(--border)';
+        item.innerHTML = `
+          <div style="font-weight:700; color:var(--primary); font-size:0.9rem;">${h.city} ｜ ${h.name}</div>
+          <div style="font-size:0.75rem; color:var(--text-muted); margin:2px 0;">📍 ${h.address}</div>
+          <div style="font-size:0.8rem; color:#059669;">🛡️ 安全亮點：${h.note}</div>
+          <a class="btn-map" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(h.name + ' ' + h.address)}" target="_blank">Google Map 導航</a>
+        `;
+        hotelList.appendChild(item);
+      });
+
+      // 4. Render Packing Checklist
+      const packList = document.getElementById('packing-checklist');
+      packingItems.forEach((text, i) => {
+        const item = document.createElement('label');
+        item.className = 'checklist-item';
+        item.innerHTML = `
+          <input type="checkbox" onchange="toggleCheck(this)" />
+          <span>${text}</span>
+        `;
+        packList.appendChild(item);
+      });
+    }
+
+    function renderDay(index) {
+      document.querySelectorAll('.day-chip').forEach((c, idx) => {
+        c.classList.toggle('active', idx === index);
+      });
+
+      const d = daysData[index];
+      const container = document.getElementById('day-details');
+      let scheduleHtml = '';
+      d.schedule.forEach(s => {
+        scheduleHtml += `
+          <div class="timeline-item">
+            <div class="timeline-time">${s.time}</div>
+            <div class="timeline-desc">${s.desc}</div>
+            ${s.map ? `<a class="btn-map" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(s.map)}" target="_blank">📍 開啟導航：${s.map.split(' ')[0]}</a>` : ''}
+          </div>
+        `;
+      });
+
+      container.innerHTML = `
+        <div class="card">
+          <div class="card-title">
+            <span>Day ${d.day} ｜ ${d.date}</span>
+            <span class="badge blue">${d.badge}</span>
+          </div>
+          <div style="font-weight:700; margin-bottom:14px; font-size:0.95rem;">${d.title}</div>
+          ${scheduleHtml}
+          <div style="margin-top:14px; padding-top:10px; border-top:1px solid var(--border); font-size:0.8rem; display:flex; justify-content:space-between; color:var(--text-muted);">
+            <span>預估花費：<strong style="color:var(--accent);">${d.cost}</strong></span>
+            <span>下榻：<strong>${d.hotel}</strong></span>
+          </div>
+        </div>
+      `;
+    }
+
+    function toggleCheck(cb) {
+      const span = cb.nextElementSibling;
+      if (cb.checked) {
+        span.style.textDecoration = 'line-through';
+        span.style.opacity = '0.5';
+      } else {
+        span.style.textDecoration = 'none';
+        span.style.opacity = '1';
+      }
+    }
+
+    window.onload = init;
+  </script>
+</body>
+</html>
